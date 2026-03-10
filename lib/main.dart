@@ -280,10 +280,13 @@ Hora: $hora
     }
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Fusión Express"),
-      ),
-      body: Center(
+  resizeToAvoidBottomInset: true,
+  appBar: AppBar(
+    title: const Text("Fusión Express"),
+  ),
+  body: SafeArea(
+    child: Center(
+      child: SingleChildScrollView(
         child: Container(
           padding: const EdgeInsets.all(20),
           width: 500,
@@ -298,7 +301,7 @@ Hora: $hora
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-
+                  
                   const Text(
                     "🟢 Tasa en vivo",
                     style:
@@ -433,6 +436,8 @@ Hora: $hora
           ),
         ),
       ),
+    ),
+  ),
     );
   }
 }
