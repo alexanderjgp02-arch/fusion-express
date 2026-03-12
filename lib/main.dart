@@ -184,8 +184,7 @@ Hora: $hora
       resultado = monto / usdVenta;
     }
 
-    String formatted = _formatter.format(resultado.round());
-
+    String formatted = resultado.toStringAsFixed(2);
     _recibeController.value = TextEditingValue(
       text: formatted,
       selection: TextSelection.collapsed(offset: formatted.length),
