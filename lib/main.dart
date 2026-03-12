@@ -235,6 +235,7 @@ Hora: $hora
       _recibeController.clear();
     });
   }
+  
 
   Widget botonOperacion(String texto) {
 
@@ -368,6 +369,41 @@ Hora: $hora
   calcularDesdeEnvia(_enviaController.text);
 },
                   ),
+                  const SizedBox(height: 10),
+
+Row(
+  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+  children: [
+
+    ElevatedButton(
+      onPressed: () {
+        String monto = _formatter.format(10000);
+        _enviaController.text = monto;
+        calcularDesdeEnvia(monto);
+      },
+      child: const Text("10K"),
+    ),
+
+    ElevatedButton(
+      onPressed: () {
+        String monto = _formatter.format(50000);
+        _enviaController.text = monto;
+        calcularDesdeEnvia(monto);
+      },
+      child: const Text("50K"),
+    ),
+
+    ElevatedButton(
+      onPressed: () {
+        String monto = _formatter.format(100000);
+        _enviaController.text = monto;
+        calcularDesdeEnvia(monto);
+      },
+      child: const Text("100K"),
+    ),
+
+  ],
+),
 
                   const SizedBox(height: 15),
 
