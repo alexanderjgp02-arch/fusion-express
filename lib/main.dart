@@ -160,38 +160,45 @@ Hora: $hora
 
   void calcularDesdeEnvia(String value) {
 
-    if (_actualizando) return;
-    _actualizando = true;
+  if (_actualizando) return;
+  _actualizando = true;
 
-    String clean = value.replaceAll('.', '');
-    double monto = double.tryParse(clean) ?? 0;
+  String clean = value.replaceAll('.', '');
+  double monto = double.tryParse(clean) ?? 0;
 
-    double resultado = 0;
+  double resultado = 0;
 
-    if (_tipoOperacion == "COP a Bs") {
-      resultado = monto / tasaCopABs;
-    }
-
-    else if (_tipoOperacion == "Bs a COP") {
-      resultado = monto * tasaBsACop;
-    }
-
-    else if (_tipoOperacion == "USD a COP") {
-      resultado = monto * usdCompra;
-    }
-
-    else if (_tipoOperacion == "COP a USD") {
-      resultado = monto / usdVenta;
-    }
-
-    String formatted = resultado.toStringAsFixed(2);
-    _recibeController.value = TextEditingValue(
-      text: formatted,
-      selection: TextSelection.collapsed(offset: formatted.length),
-    );
-
-    _actualizando = false;
+  if (_tipoOperacion == "COP a Bs") {
+    resultado = monto / tasaCopABs;
   }
+
+  else if (_tipoOperacion == "Bs a COP") {
+    resultado = monto * tasaBsACop;
+  }
+
+  else if (_tipoOperacion == "USD a COP") {
+    resultado = monto * usdCompra;
+  }
+
+  else if (_tipoOperacion == "COP a USD") {
+    resultado = monto / usdVenta;
+  }
+
+  String formatted;
+
+  if (_tipoOperacion == "COP a USD") {
+    formatted = resultado.toStringAsFixed(2);
+  } else {
+    formatted = _formatter.format(resultado.round());
+  }
+
+  _recibeController.value = TextEditingValue(
+    text: formatted,
+    selection: TextSelection.collapsed(offset: formatted.length),
+  );
+
+  _actualizando = false;
+}
 
   void calcularDesdeRecibe(String value) {
 
@@ -373,36 +380,64 @@ Hora: $hora
 
 Row(
   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-  children: [
+  children: _tipoOperacion == "USD a COP" || _tipoOperacion == "COP a USD"
+      ? [
 
-    ElevatedButton(
-      onPressed: () {
-        String monto = _formatter.format(10000);
-        _enviaController.text = monto;
-        calcularDesdeEnvia(monto);
-      },
-      child: const Text("10K"),
-    ),
+          ElevatedButton(
+            onPressed: () {
+              _enviaController.text = "5";
+              calcularDesdeEnvia("5");
+            },
+            child: const Text("5"),
+          ),
 
-    ElevatedButton(
-      onPressed: () {
-        String monto = _formatter.format(50000);
-        _enviaController.text = monto;
-        calcularDesdeEnvia(monto);
-      },
-      child: const Text("50K"),
-    ),
+          ElevatedButton(
+            onPressed: () {
+              _enviaController.text = "10";
+              calcularDesdeEnvia("10");
+            },
+            child: const Text("10"),
+          ),
 
-    ElevatedButton(
-      onPressed: () {
-        String monto = _formatter.format(100000);
-        _enviaController.text = monto;
-        calcularDesdeEnvia(monto);
-      },
-      child: const Text("100K"),
-    ),
+          ElevatedButton(
+            onPressed: () {
+              _enviaController.text = "20";
+              calcularDesdeEnvia("20");
+            },
+            child: const Text("20"),
+          ),
 
-  ],
+        ]
+      : [
+
+          ElevatedButton(
+            onPressed: () {
+              String monto = _formatter.format(10000);
+              _enviaController.text = monto;
+              calcularDesdeEnvia(monto);
+            },
+            child: const Text("10K"),
+          ),
+
+          ElevatedButton(
+            onPressed: () {
+              String monto = _formatter.format(50000);
+              _enviaController.text = monto;
+              calcularDesdeEnvia(monto);
+            },
+            child: const Text("50K"),
+          ),
+
+          ElevatedButton(
+            onPressed: () {
+              String monto = _formatter.format(100000);
+              _enviaController.text = monto;
+              calcularDesdeEnvia(monto);
+            },
+            child: const Text("100K"),
+          ),
+
+        ],
 ),
 
                   const SizedBox(height: 15),
