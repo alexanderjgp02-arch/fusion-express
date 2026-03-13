@@ -42,6 +42,7 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
   double tasaBsACop = 5.5;
   double usdVenta = 4100;
   double usdCompra = 3550;
+  double tasaBcv = 440.97;
 
   DateTime ultimaActualizacion = DateTime.now();
   int segundosDesdeActualizacion = 0;
@@ -94,7 +95,7 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
         segundosDesdeActualizacion = 0;
       });
     } catch (e) {
-      print("Error cargando tasas: $e");
+      debugPrint("Error cargando tasas: $e");
     }
   }
 
@@ -171,6 +172,9 @@ Hora: $hora
   if (_tipoOperacion == "COP a Bs") {
     resultado = monto / tasaCopABs;
   }
+  else if (_tipoOperacion == "Dólar BCV") {
+  resultado = monto * tasaBcv; 
+  }
 
   else if (_tipoOperacion == "Bs a COP") {
     resultado = monto * tasaBsACop;
@@ -212,6 +216,9 @@ Hora: $hora
 
     if (_tipoOperacion == "COP a Bs") {
       resultado = monto * tasaCopABs;
+    }
+    else if (_tipoOperacion == "Dólar BCV") {
+      resultado = monto / tasaBcv;
     }
 
     else if (_tipoOperacion == "Bs a COP") {
@@ -275,13 +282,21 @@ Hora: $hora
     if (_tipoOperacion == "COP a Bs") {
       monedaEnvia = "COP";
       monedaRecibe = "Bs";
-    } else if (_tipoOperacion == "Bs a COP") {
+    } 
+    else if (_tipoOperacion == "Bs a COP") {
       monedaEnvia = "Bs";
       monedaRecibe = "COP";
-    } else if (_tipoOperacion == "USD a COP") {
+    } 
+    else if (_tipoOperacion == "USD a COP") {
       monedaEnvia = "USD";
       monedaRecibe = "COP";
-    } else {
+    } 
+    else if (_tipoOperacion == "Dólar BCV") { 
+  monedaEnvia = "USD BCV";
+  monedaRecibe = "Bs";
+    }
+    
+    else {
       monedaEnvia = "COP";
       monedaRecibe = "USD";
     }
@@ -296,7 +311,7 @@ Hora: $hora
       child: SingleChildScrollView(
         child: Container(
           padding: const EdgeInsets.all(20),
-          width: 500,
+          constraints: const BoxConstraints(maxWidth: 800),
           child: Card(
             elevation: 20,
             color: const Color(0xFF1E1E1E),
@@ -334,6 +349,7 @@ Hora: $hora
                       botonOperacion("Bs a COP"),
                       botonOperacion("USD a COP"),
                       botonOperacion("COP a USD"),
+                      botonOperacion("Dólar BCV"),
                     ],
                   ),
 
@@ -380,7 +396,7 @@ Hora: $hora
 
 Row(
   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-  children: _tipoOperacion == "USD a COP" || _tipoOperacion == "COP a USD"
+  children: _tipoOperacion == "USD a COP" || _tipoOperacion == "Dólar BCV"
       ? [
 
           ElevatedButton(
@@ -405,6 +421,22 @@ Row(
               calcularDesdeEnvia("20");
             },
             child: const Text("20"),
+          ),
+
+          ElevatedButton(
+            onPressed: () {
+              _enviaController.text = "50";
+              calcularDesdeEnvia("50");
+            },
+            child: const Text("50"),
+          ),
+
+          ElevatedButton(
+            onPressed: () {
+              _enviaController.text = "100";
+              calcularDesdeEnvia("100");
+            },
+            child: const Text("100"),
           ),
 
         ]
@@ -435,6 +467,15 @@ Row(
               calcularDesdeEnvia(monto);
             },
             child: const Text("100K"),
+          ),
+
+          ElevatedButton(
+            onPressed: () {
+              String monto = _formatter.format(500000);
+              _enviaController.text = monto;
+              calcularDesdeEnvia(monto);
+            },
+            child: const Text("500k"),
           ),
 
         ],
@@ -492,14 +533,16 @@ Row(
 
                   const SizedBox(height: 10),
 
-                  ElevatedButton.icon(
-                    onPressed: enviarWhatsApp,
-                    icon: const Icon(Icons.chat),
-                    label: const Text("Enviar por WhatsApp"),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.green,
-                    ),
-                  ),
+                  _tipoOperacion == "Dólar BCV" 
+            ? const SizedBox.shrink() 
+            : ElevatedButton.icon(
+          onPressed: enviarWhatsApp,
+          icon: const Icon(Icons.chat),
+          label: const Text("Enviar por WhatsApp"),
+          style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.green,
+        ),
+      ),
                 ],
               ),
             ),
