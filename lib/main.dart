@@ -103,11 +103,12 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
 
   Future<void> enviarWhatsApp() async {
 
-  int enviaNumero =
-      int.tryParse(_enviaController.text.replaceAll('.', '')) ?? 0;
+  String enviaRaw = _enviaController.text.replaceAll('.', '').replaceAll(',', '.');
 
-  int recibeNumero =
-      int.tryParse(_recibeController.text.replaceAll('.', '')) ?? 0;
+  String recibeRaw = _recibeController.text.replaceAll('.', '').replaceAll(',', '.');
+  
+  double enviaNumero = double.tryParse(enviaRaw) ?? 0.0;
+  double recibeNumero = double.tryParse(recibeRaw) ?? 0.0;
 
   if (enviaNumero == 0 && recibeNumero == 0) return;
 
@@ -144,14 +145,14 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
   String envia = _formatter.format(enviaNumero);
   String recibe = _formatter.format(recibeNumero);
 
-  String mensaje = """
+  String mensaje = '''
 Hola, quiero realizar este cambio:
 
-Envio: $envia $monedaEnvia
+Envío: $envia $monedaEnvia
 Recibo: $recibe $monedaRecibe
 $tasaTexto
 Hora: $hora
-""";
+''';
 
   final url = Uri.parse(
       "https://wa.me/584126145680?text=${Uri.encodeComponent(mensaje)}");
@@ -215,7 +216,7 @@ Hora: $hora
     if (_actualizando) return;
     _actualizando = true;
 
-    String clean = value.replaceAll(',', '.');
+    String clean = value.replaceAll('.', '').replaceAll(',', '.');
     double monto = double.tryParse(clean) ?? 0;
 
     double resultado = 0;
