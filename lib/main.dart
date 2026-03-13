@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'dart:async';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter/services.dart';
 
 void main() {
   runApp(const FussionExpressApp());
@@ -90,6 +91,7 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
         tasaBsACop = rows[0]["c"][1]["v"].toDouble();
         usdVenta = rows[0]["c"][2]["v"].toDouble();
         usdCompra = rows[0]["c"][3]["v"].toDouble();
+        tasaBcv = rows[0]["c"][4]["v"].toDouble();
 
         ultimaActualizacion = DateTime.now();
         segundosDesdeActualizacion = 0;
@@ -189,10 +191,14 @@ Hora: $hora
   }
 
   String formatted;
+  
+  final numberFormat = NumberFormat("#,##0.00", "es_VE");
 
-  if (_tipoOperacion == "COP a USD") {
-    formatted = resultado.toStringAsFixed(2);
-  } else {
+  if (_tipoOperacion == "COP a USD" || _tipoOperacion == "Dólar BCV") {
+ formatted = numberFormat.format(resultado);
+    }
+
+  else {
     formatted = _formatter.format(resultado.round());
   }
 
@@ -209,7 +215,7 @@ Hora: $hora
     if (_actualizando) return;
     _actualizando = true;
 
-    String clean = value.replaceAll('.', '');
+    String clean = value.replaceAll(',', '.');
     double monto = double.tryParse(clean) ?? 0;
 
     double resultado = 0;
@@ -322,7 +328,7 @@ Hora: $hora
               padding: const EdgeInsets.all(25),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
-                children: [
+                children: [ 
                   
                   const Text(
                     "🟢 Tasa en vivo",
@@ -335,11 +341,11 @@ Hora: $hora
 
                   const SizedBox(height: 15),
 
-                  Text("COP ➜ Bs: $tasaCopABs"),
-                  Text("Bs ➜ COP: $tasaBsACop"),
+                  Text("COP ➜ Bs: ${NumberFormat("#,##0.00", "es_ES").format(tasaCopABs)}"),
+                  Text("Bs ➜ COP: ${NumberFormat("#,##0.00", "es_ES").format(tasaBsACop)}"),
+                  Text("Tasa BCV: ${NumberFormat("#,##0.00", "es_ES").format(tasaBcv)} BS"),
                   Text("USD Venta: ${_formatter.format(usdVenta.round())} COP"),
                   Text("USD Compra: ${_formatter.format(usdCompra.round())} COP"),
-
                   const SizedBox(height: 20),
 
                   Wrap(
@@ -358,6 +364,9 @@ Hora: $hora
                   TextField(
                     controller: _enviaController,
                     keyboardType: TextInputType.number,
+                    inputFormatters: [
+                  FilteringTextInputFormatter.allow(RegExp(r'[0-9.,]')), 
+                    ],
                     decoration: InputDecoration(
                       labelText: "Envía ($monedaEnvia)",
                       filled: true,
@@ -486,7 +495,10 @@ Row(
                   TextField(
                     controller: _recibeController,
                     keyboardType: TextInputType.number,
-                    decoration: InputDecoration(
+                    inputFormatters: [
+                  FilteringTextInputFormatter.allow(RegExp(r'[0-9.,]')), 
+                    ],
+                      decoration: InputDecoration(
                       labelText: "Recibe ($monedaRecibe)",
                       filled: true,
                       fillColor: const Color(0xFF2A2A2A),
