@@ -176,7 +176,7 @@ Hora: $hora
     resultado = monto / tasaCopABs;
   }
   else if (_tipoOperacion == "Dólar BCV") {
-  resultado = monto * tasaBcv; 
+  resultado = monto / tasaBcv / tasaCopABs; 
   }
 
   else if (_tipoOperacion == "Bs a COP") {
@@ -225,7 +225,7 @@ Hora: $hora
       resultado = monto * tasaCopABs;
     }
     else if (_tipoOperacion == "Dólar BCV") {
-      resultado = monto / tasaBcv;
+      resultado = monto * tasaBcv * tasaCopABs;
     }
 
     else if (_tipoOperacion == "Bs a COP") {
@@ -283,8 +283,8 @@ Hora: $hora
   @override
   Widget build(BuildContext context) {
 
-    String monedaEnvia;
-    String monedaRecibe;
+    String monedaEnvia = "COP";
+    String monedaRecibe = "USD";
 
     if (_tipoOperacion == "COP a Bs") {
       monedaEnvia = "COP";
@@ -294,14 +294,14 @@ Hora: $hora
       monedaEnvia = "Bs";
       monedaRecibe = "COP";
     } 
+    else if (_tipoOperacion == "Dólar BCV") {
+      monedaEnvia = "COP";
+      monedaRecibe = "USD BCV";
+    } 
     else if (_tipoOperacion == "USD a COP") {
       monedaEnvia = "USD";
       monedaRecibe = "COP";
     } 
-    else if (_tipoOperacion == "Dólar BCV") { 
-  monedaEnvia = "USD BCV";
-  monedaRecibe = "Bs";
-    }
     
     else {
       monedaEnvia = "COP";
@@ -406,7 +406,7 @@ Hora: $hora
 
 Row(
   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-  children: _tipoOperacion == "USD a COP" || _tipoOperacion == "Dólar BCV"
+  children: _tipoOperacion == "USD a COP"
       ? [
 
           ElevatedButton(
