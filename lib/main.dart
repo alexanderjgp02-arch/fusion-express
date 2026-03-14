@@ -383,7 +383,7 @@ child: Column(
     Text(" Compra USD: ${_formatter.format(usdCompra.round())} COP "),
 
     const SizedBox(height: 10),
-    Divider(color: const Color.fromARGB(255, 240, 240, 240).withOpacity(0.5)),
+    Divider(color: Colors.white.withValues(alpha: 0.3),),
     const SizedBox(height: 10),
     ],
     ), 
@@ -400,7 +400,7 @@ child: Column(
                       botonOperacion("COP a USD"),
                       botonOperacion("Dólar BCV"),
                     const SizedBox(height: 10),
-                    Divider(color: const Color.fromARGB(255, 240, 240, 240).withOpacity(0.5)),
+                    Divider(color: Colors.white.withValues(alpha: 0.3),),
                     const SizedBox(height: 10),
                     ],
                   ),
@@ -586,7 +586,7 @@ Row(
                     
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color.fromARGB(255, 161, 14, 3),
-                      padding: EdgeInsets.symmetric(horizontal: 18, vertical: 10)
+                      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10)
                     ),
                     child: const Text("Limpiar"),
                   ),
