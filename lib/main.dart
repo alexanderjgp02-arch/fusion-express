@@ -175,8 +175,9 @@ Hora: $hora
   if (_tipoOperacion == "COP a Bs") {
     resultado = monto / tasaCopABs;
   }
-  else if (_tipoOperacion == "Dólar BCV") {
-  resultado = monto / tasaBcv / tasaCopABs; 
+
+  else if (_tipoOperacion == "Dólar BCV") { 
+  resultado = monto / tasaCopABs / tasaBcv;
   }
 
   else if (_tipoOperacion == "Bs a COP") {
@@ -283,6 +284,7 @@ Hora: $hora
   @override
   Widget build(BuildContext context) {
 
+    double tasaUsdCop = tasaBcv * tasaCopABs;
     String monedaEnvia = "COP";
     String monedaRecibe = "USD";
 
@@ -310,6 +312,7 @@ Hora: $hora
 
     return Scaffold(
   resizeToAvoidBottomInset: true,
+  backgroundColor: const Color(0xFF0F172A),
   appBar: AppBar(
     title: const Text("Fusión Express"),
   ),
@@ -340,14 +343,53 @@ Hora: $hora
                   Text("Actualizado hace $segundosDesdeActualizacion s"),
                   Text("Hora: $horaActualizacion"),
 
-                  const SizedBox(height: 15),
+                  const SizedBox(height: 15), 
 
-                  Text("COP ➜ Bs: ${NumberFormat("#,##0.00", "es_ES").format(tasaCopABs)}"),
-                  Text("Bs ➜ COP: ${NumberFormat("#,##0.00", "es_ES").format(tasaBsACop)}"),
-                  Text("Tasa BCV: ${NumberFormat("#,##0.00", "es_ES").format(tasaBcv)} BS"),
-                  Text("USD Venta: ${_formatter.format(usdVenta.round())} COP"),
-                  Text("USD Compra: ${_formatter.format(usdCompra.round())} COP"),
-                  const SizedBox(height: 20),
+                  Column(
+  crossAxisAlignment: CrossAxisAlignment.start,
+  children: [
+    Row(
+  mainAxisAlignment: MainAxisAlignment.center,
+  children: [
+
+    TasaCard(
+      titulo: "💱 COP ➜ Bs",
+      valor: NumberFormat("#,##0.00", "es_ES").format(tasaCopABs),
+    ),
+
+    const SizedBox(width: 12),
+
+    TasaCard(
+      titulo: "💱 Bs ➜ COP",
+      valor: NumberFormat("#,##0.00", "es_ES").format(tasaBsACop),
+    ),
+
+  ],
+),
+const SizedBox(height: 10),
+Center(
+child: Column(
+    crossAxisAlignment: CrossAxisAlignment.center,
+    children: [
+
+    Text(" 1 USD BCV: ${_formatter.format(tasaUsdCop.round())} COP"),
+
+    Text(" Tasa BCV: ${NumberFormat("#,##0.00", "es_ES").format(tasaBcv)} Bs"),
+
+    const SizedBox(height: 5),
+
+    Text(" Venta USD: ${_formatter.format(usdVenta.round())} COP "),
+
+    Text(" Compra USD: ${_formatter.format(usdCompra.round())} COP "),
+
+    const SizedBox(height: 10),
+    Divider(color: const Color.fromARGB(255, 240, 240, 240).withOpacity(0.5)),
+    const SizedBox(height: 10),
+    ],
+    ), 
+  ),
+  ],
+),
 
                   Wrap(
                     spacing: 10,
@@ -357,6 +399,9 @@ Hora: $hora
                       botonOperacion("USD a COP"),
                       botonOperacion("COP a USD"),
                       botonOperacion("Dólar BCV"),
+                    const SizedBox(height: 10),
+                    Divider(color: const Color.fromARGB(255, 240, 240, 240).withOpacity(0.5)),
+                    const SizedBox(height: 10),
                     ],
                   ),
 
@@ -538,8 +583,10 @@ Row(
 
                   ElevatedButton(
                     onPressed: limpiar,
+                    
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red,
+                      backgroundColor: const Color.fromARGB(255, 161, 14, 3),
+                      padding: EdgeInsets.symmetric(horizontal: 18, vertical: 10)
                     ),
                     child: const Text("Limpiar"),
                   ),
@@ -551,9 +598,9 @@ Row(
             : ElevatedButton.icon(
           onPressed: enviarWhatsApp,
           icon: const Icon(Icons.chat),
-          label: const Text("Enviar por WhatsApp"),
+          label: const Text("Compartir por WhatsApp"),
           style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.green,
+          backgroundColor: const Color.fromARGB(255, 31, 107, 41),
         ),
       ),
                 ],
@@ -564,6 +611,51 @@ Row(
       ),
     ),
   ),
+    );
+  }
+}
+class TasaCard extends StatelessWidget {
+  final String titulo;
+  final String valor;
+
+  const TasaCard({
+    super.key,
+    required this.titulo,
+    required this.valor,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 140,
+      padding: const EdgeInsets.symmetric(vertical: 14),
+      decoration: BoxDecoration(
+        color: const Color(0xFF2A2A2A),
+        borderRadius: BorderRadius.circular(14),
+      ),
+      child: Column(
+        children: [
+
+          Text(
+            titulo,
+            style: const TextStyle(
+              fontSize: 13,
+              color: Colors.grey,
+            ),
+          ),
+
+          const SizedBox(height: 6),
+
+          Text(
+            valor,
+            style: const TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+
+        ],
+      ),
     );
   }
 }
